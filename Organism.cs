@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MovementScript : MonoBehaviour
+public class Organism: MonoBehaviour
 {
     [Header("Genetic Traits")]
     public float speed = 1f; 
@@ -37,6 +37,7 @@ public class MovementScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         maxEnergy = energy * size; 
         radius = size * 0.5f; // Calculate radius based on size
+        UpdateColliderSize(); // Set collider size based on initial size
         ChooseNewDirection();
     }
 
@@ -62,16 +63,12 @@ public class MovementScript : MonoBehaviour
         }
         else
         {
-            // random chance to change direction
-            if (Random.value < 0.01f) // 1% chance to change direction
+            if (Random.value < 0.01f)
             {
                 ChooseNewDirection();
             }
-            transform.position = nextPosition; // Move to the new position
+            transform.position = nextPosition;
         }
-        
-        // Move to the new position (collision handling adjusts moveDirection if needed)
-        transform.position = transform.position + (Vector3)(moveDirection * speed * Time.deltaTime);
     }
     
     bool WouldBeOutsideBoundary(Vector3 position)
@@ -111,6 +108,45 @@ public class MovementScript : MonoBehaviour
         energy -= energyCost;
     }
 
+    public void GainEnergy(float amount)
+    {
+        energy += amount;
+        if (energy > maxEnergy)
+        {
+            energy = maxEnergy;
+        }
+    }
+
+    void Awake()
+    {
+        if (GetComponent<Collider2D>() == null)
+        {
+            CircleCollider2D collider = gameObject.AddComponent<CircleCollider2D>();
+            collider.isTrigger = false; // Make it a solid collider
+        }
+
+        if (GetComponent<Rigidbody2D>() == null)
+        {
+            Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.freezeRotation = true;
+        }
+
+        if (gameObject.tag == "Untagged")
+        {
+            gameObject.tag = "Organism";
+        }
+    }
+
+    void UpdateColliderSize()
+    {
+        CircleCollider2D collider = GetComponent<CircleCollider2D>();
+        if (collider != null)
+        {
+            collider.radius = size * 0.5f;
+        }
+    }
+
     void UpdateVisuals()
     {
         transform.localScale = Vector3.one * size;
@@ -141,3 +177,5 @@ public class MovementScript : MonoBehaviour
         Destroy(gameObject);
     }
 }
+
+

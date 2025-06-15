@@ -433,7 +433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   organismPrefab: {fileID: 6880720324883062853, guid: a21523b5adc3ea341ac54194fd8c31f2, type: 3}
-  spawnCount: 500
+  spawnCount: 300
   boundaryObject: {fileID: 728446675}
   edgeBuffer: 1
   minDistance: 2
@@ -482,9 +482,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodPrefab: {fileID: 7085532213672567868, guid: 243544c01bbd8544ea5f878d1968951a, type: 3}
-  maxFoodCount: 50
-  spawnRate: 2
-  initialFoodCount: 30
+  maxFoodCount: 300
+  spawnRate: 1
+  initialFoodCount: 100
   boundaryObject: {fileID: 728446675}
   edgeBuffer: 0.5
 --- !u!4 &1478795812

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4325210969208090481}
   - component: {fileID: 6115886513040051433}
   - component: {fileID: 4749420307249651577}
+  - component: {fileID: -2051089579377279157}
   m_Layer: 0
   m_Name: Organism
   m_TagString: Untagged
@@ -146,7 +147,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directionChangeChance: 0.001
+  steeringForce: 1
   moveDirection: {x: 0, y: 0}
+  targetDirection: {x: 0, y: 0}
+  hasTarget: 0
 --- !u!114 &6115886513040051433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,3 +196,21 @@ MonoBehaviour:
   organismPrefab: {fileID: 6880720324883062853}
   reproductionCost: 100
   reproductionRate: 0.1
+--- !u!114 &-2051089579377279157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6b1c05bb43e9ac47a5b1fe1fd407d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  foodCheckInterval: 0.5
+  foodLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  targetFood: {fileID: 7085532213672567868, guid: 243544c01bbd8544ea5f878d1968951a, type: 3}
+  hasTargetFood: 0

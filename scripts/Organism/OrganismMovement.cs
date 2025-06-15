@@ -5,7 +5,6 @@ public class OrganismMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float directionChangeChance = 0.001f;
-    [SerializeField] private float steeringForce = 1f; // How strongly to steer towards targets
 
     [Header("Current State")]
     [SerializeField] private Vector2 moveDirection;
@@ -48,9 +47,7 @@ public class OrganismMovement : MonoBehaviour
         // If we have a target (like food), steer towards it
         if (hasTarget)
         {
-            // Blend current direction with target direction for smooth steering
-            desiredDirection = Vector2.Lerp(moveDirection, targetDirection, steeringForce * Time.deltaTime);
-            desiredDirection = desiredDirection.normalized;
+            desiredDirection = targetDirection;
         }
         else
         {
@@ -127,12 +124,6 @@ public class OrganismMovement : MonoBehaviour
     {
         hasTarget = false;
         targetDirection = Vector2.zero;
-    }
-
-    // Allow external control of steering force
-    public void SetSteeringForce(float force)
-    {
-        steeringForce = Mathf.Clamp01(force);
     }
 
     // Debug visualization

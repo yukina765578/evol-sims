@@ -109,27 +109,15 @@ public class OrganismController : MonoBehaviour
         Initialize();
     }
     
-    // ===== 統合されたUpdate処理 =====
     void Update()
     {
         if (!IsAlive) return;
-        
-        // 1. 年齢の更新
+        Debug.Log($"{gameObject.name} Age: {age:F1}, Energy: {energy.Energy}, Reproduce: {energy.MaxEnergy * 0.8f}");
         UpdateAge();
-        
-        // 2. 食べ物の検索と移動方向の更新（OrganismFoodSensor）
         foodSensor.ManagedUpdate();
-        
-        // 3. 移動処理（OrganismMovement）
         movement.ManagedUpdate();
-        
-        // 4. エネルギー消費（OrganismEnergy）
         energy.ManagedUpdate();
-        
-        // 5. 繁殖チェック（OrganismReproduce）
         reproduce.ManagedUpdate();
-        
-        // 6. 死亡チェック
         CheckDeath();
     }
     

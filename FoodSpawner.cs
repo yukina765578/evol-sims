@@ -6,8 +6,12 @@ public class FoodSpawner : MonoBehaviour
     [Header("Food Spawning Settings")]
     public GameObject foodPrefab;
     public int maxFoodCount = 500;
-    public float spawnRate = 0.1f; 
-    public int initialFoodCount = 500;
+    public float spawnRate = 1.0f; // 1秒ごとにバッチ生成するようにデフォルト値を変更
+    public int initialFoodCount = 100; // 初期生成数を調整
+
+    // ★★★ 変更点1: 一度に生成する数を設定する変数を追加 ★★★
+    [Tooltip("一度に生成するエサの数")]
+    public int spawnBatchSize = 10;
 
     [Header("Boundary Reference")]
     public GameObject boundaryObject;
@@ -36,14 +40,31 @@ public class FoodSpawner : MonoBehaviour
         SpawnInitialFood();
     }
 
+    // ★★★ 変更点2: Updateメソッドをバッチ生成ロジックに変更 ★★★
     void Update()
     {
         spawnTimer += Time.deltaTime;
 
-        if (spawnTimer >= spawnRate && activeFoodCount < maxFoodCount)
+        // spawnRateで設定した時間が経過したら実行
+        if (spawnTimer >= spawnRate)
         {
-            SpawnFoodFromPool();
-            spawnTimer = 0f;
+            spawnTimer = 0f; // タイマーをリセット
+            Debug.Log($"Current active food count: {activeFoodCount}");
+
+            // spawnBatchSizeの数だけエサを生成するループ
+            for (int i = 0; i < spawnBatchSize; i++)
+            {
+                // ただし、最大数を超えないようにチェック
+                if (activeFoodCount < maxFoodCount)
+                {
+                    SpawnFoodFromPool();
+                }
+                else
+                {
+                    // 最大数に達したらループを抜ける
+                    break;
+                }
+            }
         }
     }
 
@@ -53,7 +74,12 @@ public class FoodSpawner : MonoBehaviour
         for (int i = 0; i < maxFoodCount; i++)
         {
             GameObject food = Instantiate(foodPrefab, Vector3.zero, Quaternion.identity, this.transform);
-            food.GetComponent<Food>().Spawner = this;
+            // FoodコンポーネントにSpawnerの参照を渡す
+            Food foodComponent = food.GetComponent<Food>();
+            if (foodComponent != null)
+            {
+                foodComponent.Spawner = this;
+            }
             food.SetActive(false);
             foodPool.Add(food);
         }
@@ -61,7 +87,8 @@ public class FoodSpawner : MonoBehaviour
 
     void SpawnInitialFood()
     {
-        for (int i = 0; i < initialFoodCount; i++)
+        int count = Mathf.Min(initialFoodCount, maxFoodCount);
+        for (int i = 0; i < count; i++)
         {
             SpawnFoodFromPool();
         }

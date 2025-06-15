@@ -108,9 +108,6 @@ MonoBehaviour:
   age: 0
   healthyColor: {r: 0, g: 1, b: 0, a: 1}
   lowEnergyColor: {r: 1, g: 0, b: 0, a: 1}
-  organismPrefab: {fileID: 0}
-  reproductionCost: 100
-  reproductionRate: 0.1
   showDebugInfo: 1
 --- !u!114 &3131208653642258329
 MonoBehaviour:
@@ -127,11 +124,11 @@ MonoBehaviour:
   speed: 1
   size: 1
   sensingRadius: 5
-  maxLifeSpan: 100
-  speedRange: {x: 0.5, y: 10}
-  sizeRange: {x: 0.5, y: 5}
+  maxLifeSpan: 50
+  speedRange: {x: 1, y: 20}
+  sizeRange: {x: 1, y: 10}
   sensingRadiusRange: {x: 1, y: 10}
-  maxLifeSpanRange: {x: 50, y: 200}
+  maxLifeSpanRange: {x: 30, y: 50}
   mutationRate: 0.1
   mutationStrength: 0.1
 --- !u!114 &4325210969208090481
@@ -146,8 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c49287a2555751c48be14b54c3bd55b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directionChangeChance: 0.001
-  steeringForce: 1
+  directionChangeChance: 0.02
   moveDirection: {x: 0, y: 0}
   targetDirection: {x: 0, y: 0}
   hasTarget: 0
@@ -163,12 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccfa9fc36e9aae14f967bf9db0b6d24b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingEnergy: 1e+9
+  startingEnergy: 50
   baseEnergyConsumptionRate: 0.001
   currentEnergy: 0
   maxEnergy: 0
   criticalEnergyThreshold: 10
-  reproductionEnergyThreshold: 80
   OnEnergyChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -194,8 +189,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   organismPrefab: {fileID: 6880720324883062853}
-  reproductionCost: 100
-  reproductionRate: 0.1
+  reproductionCost: 90
+  reproductionRate: 0.5
 --- !u!114 &-2051089579377279157
 MonoBehaviour:
   m_ObjectHideFlags: 0

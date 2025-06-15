@@ -100,5 +100,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4783e56b30b15e4cb820d9110bcedba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  energyValue: 50
+  energyValue: 4
   size: 0.5

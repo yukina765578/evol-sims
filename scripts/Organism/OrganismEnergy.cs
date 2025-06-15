@@ -5,7 +5,7 @@ using UnityEngine.Events;
 public class OrganismEnergy : MonoBehaviour
 {
     [Header("Energy Settings")]
-    [SerializeField] private float startingEnergy = 50.0f;
+    [SerializeField] private float startingEnergy = 50f;
     [SerializeField] private float baseEnergyConsumptionRate = 0.001f;
 
     [Header("Current State")]

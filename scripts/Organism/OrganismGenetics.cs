@@ -6,13 +6,13 @@ public class OrganismGenetics : MonoBehaviour
     [SerializeField] private float speed = 1.0f;
     [SerializeField] private float size = 1.0f;
     [SerializeField] private float sensingRadius = 5.0f;
-    [SerializeField] private float maxLifeSpan = 100.0f;
+    [SerializeField] private float maxLifeSpan = 50.0f;
     
     [Header("Trait Ranges")] // x = min, y = max
     [SerializeField] private Vector2 speedRange = new Vector2(0.5f, 10.0f);
     [SerializeField] private Vector2 sizeRange = new Vector2(0.5f, 5.0f);
     [SerializeField] private Vector2 sensingRadiusRange = new Vector2(1.0f, 10.0f);
-    [SerializeField] private Vector2 maxLifeSpanRange = new Vector2(50.0f, 200.0f);
+    [SerializeField] private Vector2 maxLifeSpanRange = new Vector2(20.0f, 80.0f);
     
     [Header("Mutation Settings")]
     [SerializeField] private float mutationRate = 0.1f; // Probability of mutation
@@ -44,8 +44,8 @@ public class OrganismGenetics : MonoBehaviour
     {
         if (Random.value < mutationRate)
         {
-            float mutation = Random.Range(-mutationStrength, mutationStrength) * traitValue;
-            float newValue = traitValue + mutation;
+            float mutation = Random.Range(0.9f, 1.1f);
+            float newValue = traitValue * mutation;
             return Mathf.Clamp(newValue, range.x, range.y);
         }
         return traitValue;

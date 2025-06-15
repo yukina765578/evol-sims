@@ -39,8 +39,6 @@ public class CameraController : MonoBehaviour
         
         if (Mathf.Abs(scroll.y) > 0.1f) // Add threshold
         {
-            Debug.Log("Scrolling: " + scroll.y); // Debug line
-            
             float zoomDirection = scroll.y > 0 ? -1 : 1; // Invert if needed
             cam.orthographicSize += zoomDirection * zoomSpeed * Time.deltaTime * 10f;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
@@ -55,8 +53,6 @@ public class CameraController : MonoBehaviour
         if (Mouse.current.rightButton.isPressed)
         {
             Vector2 mouseDelta = Mouse.current.delta.ReadValue();
-            Debug.Log("Panning: " + mouseDelta); // Debug line
-            
             Vector3 move = new Vector3(-mouseDelta.x, -mouseDelta.y, 0);
             move *= panSpeed * Time.deltaTime * cam.orthographicSize * 0.01f;
             
@@ -70,7 +66,6 @@ public class CameraController : MonoBehaviour
         
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            Debug.Log("Resetting camera"); // Debug line
             transform.position = new Vector3(0, 0, -10);
             cam.orthographicSize = 100f;
         }

@@ -5,8 +5,8 @@ using UnityEngine.Events;
 public class OrganismEnergy : MonoBehaviour
 {
     [Header("Energy Settings")]
-    [SerializeField] private float startingEnergy = 100.0f;
-    [SerializeField] private float baseEnergyConsumptionRate = 1.0f;
+    [SerializeField] private float startingEnergy = 1000000000.0f;
+    [SerializeField] private float baseEnergyConsumptionRate = 0.001f;
 
     [Header("Current State")]
     [SerializeField] private float currentEnergy;
@@ -39,7 +39,7 @@ public class OrganismEnergy : MonoBehaviour
     public void Initialize()
     {
         maxEnergy = genetics.CalculateMaxEnergy(startingEnergy);
-        currentEnergy = Mathf.Min(startingEnergy, maxEnergy);
+        currentEnergy = maxEnergy;
         OnEnergyChanged?.Invoke(currentEnergy);
     }
 
@@ -57,19 +57,16 @@ public class OrganismEnergy : MonoBehaviour
     float CalculateEnergyConsumption()
     {
         float geneticCost = genetics.CalculateEnergyConsumptionRate();
-
-        return baseEnergyConsumptionRate * geneticCost;
+        return geneticCost * baseEnergyConsumptionRate;
     }
 
     public void ModifyEnergy(float amount)
     {
         float previousEnergy = currentEnergy;
         currentEnergy = Mathf.Clamp(currentEnergy + amount, 0f, maxEnergy);
-
         if (Mathf.Abs(previousEnergy - currentEnergy) > Mathf.Epsilon)
         {
             OnEnergyChanged?.Invoke(EnergyPercentage);
-
             CheckEnergyThresholds(previousEnergy);
         }
     }
@@ -88,16 +85,6 @@ public class OrganismEnergy : MonoBehaviour
         {
             OnReproductionReady?.Invoke();
         }
-    }
-
-    public bool TrySpendReproductionEnergy(float cost)
-    {
-        if (currentEnergy >= cost)
-        {
-            ModifyEnergy(-cost);
-            return true;
-        }
-        return false;
     }
 
     public void UpdateMaxEnergy()

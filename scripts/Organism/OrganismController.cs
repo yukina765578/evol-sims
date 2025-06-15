@@ -11,6 +11,11 @@ public class OrganismController : MonoBehaviour
     [Header("Visual Settings")]
     [SerializeField] private Color healthyColor = Color.green;
     [SerializeField] private Color lowEnergyColor = Color.red;
+
+    [Header("Reproduction Settings")]
+    [SerializeField] private GameObject organismPrefab;
+    [SerializeField] private float reproductionCost = 100f;
+    [SerializeField] private float reproductionRate = 0.1f;
     
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = true;
@@ -97,9 +102,9 @@ public class OrganismController : MonoBehaviour
         // Subscribe to energy events
         if (energy != null)
         {
-            energy.onEnergyDepleted.AddListener(OnEnergyDepleted);
-            energy.onEnergyChanged.AddListener(OnEnergyChanged);
-            energy.onCriticalEnergy.AddListener(OnCriticalEnergy);
+            energy.OnEnergyDepleted.AddListener(OnEnergyDepleted);
+            energy.OnEnergyChanged.AddListener(OnEnergyChanged);
+            energy.OnCriticalEnergy.AddListener(OnCriticalEnergy);
         }
     }
     
@@ -111,7 +116,6 @@ public class OrganismController : MonoBehaviour
     void Update()
     {
         if (!IsAlive) return;
-    
         UpdateAge();
         CheckDeath();
     }
@@ -159,7 +163,7 @@ public class OrganismController : MonoBehaviour
     
     void OnCriticalEnergy()
     {
-        Debug.Log($"{gameObject.name} is in critical energy state!");
+        // Debug.Log($"{gameObject.name} is in critical energy state!");
     }
     
     void CheckDeath()
@@ -175,7 +179,7 @@ public class OrganismController : MonoBehaviour
         if (!IsAlive) return;
         
         IsAlive = false;
-        Debug.Log($"{gameObject.name} died from {cause} at age {age:F1}");
+        // Debug.Log($"{gameObject.name} died from {cause} at age {age:F1}");
         
         StartCoroutine(DeathAnimation());
     }
@@ -220,30 +224,29 @@ public class OrganismController : MonoBehaviour
         if (food != null)
         {
             // Gain energy from food
-            energy.GainEnergy(food.energyValue);
-            Debug.Log($"{gameObject.name} ate food for {food.energyValue} energy");
+            energy.ModifyEnergy(food.energyValue);
         }
     }
     
     // Debug GUI
-    void OnGUI()
-    {
-        if (!showDebugInfo || !IsAlive) return;
-        
-        // Convert world position to screen position
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        screenPos.y = Screen.height - screenPos.y; // Flip Y coordinate
-        
-        // Create label style
-        GUIStyle style = new GUIStyle(GUI.skin.label);
-        style.fontSize = 10;
-        style.normal.textColor = Color.white;
-        style.alignment = TextAnchor.MiddleCenter;
-        
-        // Display info above organism
-        string info = $"E: {energy.Energy:F0}/{energy.MaxEnergy:F0}\nA: {age:F0}/{genetics.MaxLifeSpan:F0}";
-        GUI.Label(new Rect(screenPos.x - 40, screenPos.y - 50, 80, 30), info, style);
-    }
+    // void OnGUI()
+    // {
+    //     if (!showDebugInfo || !IsAlive) return;
+    //     
+    //     // Convert world position to screen position
+    //     Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+    //     screenPos.y = Screen.height - screenPos.y; // Flip Y coordinate
+    //     
+    //     // Create label style
+    //     GUIStyle style = new GUIStyle(GUI.skin.label);
+    //     style.fontSize = 10;
+    //     style.normal.textColor = Color.white;
+    //     style.alignment = TextAnchor.MiddleCenter;
+    //     
+    //     // Display info above organism
+    //     string info = $"E: {energy.Energy:F0}/{energy.MaxEnergy:F0}\nA: {age:F0}/{genetics.MaxLifeSpan:F0}";
+    //     GUI.Label(new Rect(screenPos.x - 40, screenPos.y - 50, 80, 30), info, style);
+    // }
     
     // Gizmos for debugging
     void OnDrawGizmosSelected()

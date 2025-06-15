@@ -31,22 +31,12 @@ public class Food : MonoBehaviour
     
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"Food collision detected with: {other.name}");
-        
         // Check if an organism touched this food (look for Organism component)
-        Organism organism = other.GetComponent<Organism>();
-        if (organism != null)
+        
+        if (other.CompareTag("Organism"))
         {
-            Debug.Log($"Organism found! Giving {energyValue} energy");
-            // Give the organism energy
-            organism.GainEnergy(energyValue);
-            
             // Destroy this food item
             Destroy(gameObject);
-        }
-        else
-        {
-            Debug.Log("No Organism component found on collision object");
         }
     }
     

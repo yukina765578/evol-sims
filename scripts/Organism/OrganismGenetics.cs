@@ -32,7 +32,7 @@ public class OrganismGenetics : MonoBehaviour
         maxLifeSpan = Random.Range(maxLifeSpanRange.x, maxLifeSpanRange.y);
     }
     
-    public void InheritFrom(OrganismGenetics parent)
+    public void Inherit(OrganismGenetics parent)
     {
         speed = MutateTrait(parent.speed, speedRange);
         size = MutateTrait(parent.size, sizeRange);
@@ -53,7 +53,7 @@ public class OrganismGenetics : MonoBehaviour
     
     public float CalculateEnergyConsumptionRate()
     {
-        return (speed * 0.5f + size * 0.3f + sensingRadius * 0.1f);
+        return (speed * 0.05f + size * 0.03f + sensingRadius * 0.01f) * 0.1f;
     }
     
     public float CalculateMaxEnergy(float baseEnergy)

@@ -18,7 +18,12 @@ public class OrganismMovement : MonoBehaviour
 
     void Awake()
     {
-        genetics = GetComponent<OrganismGenetics>()
+        genetics = GetComponent<OrganismGenetics>();
+    }
+
+    public void UpdateRadius()
+    {
+        radius = genetics.Size * 0.5f;
     }
 
     void Update()
@@ -29,7 +34,7 @@ public class OrganismMovement : MonoBehaviour
     public void Initialize(BoundaryVisualizer boundaryVisualizer)
     {
         boundary = boundaryVisualizer;
-        radius = genetics.Size * 0.5f; // update radius
+        radius = genetics.SensingRadius * 0.5f; // update radius
         ChooseNewDirection();
     }
 
@@ -37,9 +42,9 @@ public class OrganismMovement : MonoBehaviour
     {
         Vector3 nextPosition = transform.position + (Vector3)(moveDirection * genetics.Speed * Time.deltaTime);
 
-        if (CheckBoudnaryCollision(nextPosition))
+        if (CheckBoundaryCollision(nextPosition))
         {
-            HandleBoundaryCollision();
+            HandleBoundaryCollision(nextPosition);
             nextPosition = transform.position + (Vector3)(moveDirection * genetics.Speed * Time.deltaTime);
         }
         else
@@ -53,7 +58,7 @@ public class OrganismMovement : MonoBehaviour
         transform.position = nextPosition;
     }
 
-    bool CheckBoudnaryCollision(Vector3 position)
+    bool CheckBoundaryCollision(Vector3 position)
     {
         if (boundary == null) return false;
 

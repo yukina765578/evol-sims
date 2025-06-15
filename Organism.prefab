@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8689385450617680686}
   - component: {fileID: 6493447783261547092}
-  - component: {fileID: 6197316410101084282}
+  - component: {fileID: -268317678255836898}
   m_Layer: 0
   m_Name: Organism
   m_TagString: Untagged
@@ -88,7 +88,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6197316410101084282
+--- !u!114 &-268317678255836898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,13 +97,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6880720324883062853}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dac9467196499545a561fcf2926a0fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ab748270018c6b40b259564445c1dac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  size: 2
-  sensingRadius: 3
-  maxLifespan: 100
-  energy: 50
-  age: 0
-  maxEnergy: 100

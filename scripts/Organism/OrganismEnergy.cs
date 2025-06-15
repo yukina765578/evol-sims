@@ -40,7 +40,7 @@ public class OrganismEnergy : MonoBehaviour
     {
         maxEnergy = genetics.CalculateMaxEnergy(startingEnergy);
         currentEnergy = Mathf.Min(startingEnergy, maxEnergy);
-        onEnergyChanged?.Invoke(currentEnergy);
+        OnEnergyChanged?.Invoke(currentEnergy);
     }
 
     void Update()

@@ -1,0 +1,120 @@
+using UnityEngine;
+using UnityEngine.Events;
+
+[RequireComponent(typeof(OrganismGenetics))]
+public class OrganismEnergy : MonoBehaviour
+{
+    [Header("Energy Settings")]
+    [SerializeField] private float startingEnergy = 100.0f;
+    [SerializeField] private float baseEnergyConsumptionRate = 1.0f;
+
+    [Header("Current State")]
+    [SerializeField] private float currentEnergy;
+    [SerializeField] private float maxEnergy;
+
+    [Header("Energy Thresholds")]
+    [SerializeField] private float criticalEnergyThreshold = 10f;
+    [SerializeField] private float reproductionEnergyThreshold = 80f;
+
+    [Header("Events")]
+    public UnityEvent<float> OnEnergyChanged = new UnityEvent<float>();
+    public UnityEvent OnEnergyDepleted = new UnityEvent();
+    public UnityEvent OnCriticalEnergy = new UnityEvent();
+    public UnityEvent OnReproductionReady = new UnityEvent();
+
+    private OrganismGenetics genetics;
+
+    public float Energy => currentEnergy;
+    public float MaxEnergy => maxEnergy;
+    public float EnergyPercentage => currentEnergy / maxEnergy;
+    public bool IsEnergyDepleted => currentEnergy <= 0f;
+    public bool IsEnergyCritical => currentEnergy <= criticalEnergyThreshold;
+    public bool CanReproduce => currentEnergy >= reproductionEnergyThreshold;
+
+    void Awake()
+    {
+        genetics = GetComponent<OrganismGenetics>();
+    }
+
+    public void Initialize()
+    {
+        maxEnergy = genetics.CalculateMaxEnergy(startingEnergy);
+        currentEnergy = Mathf.Min(startingEnergy, maxEnergy);
+        onEnergyChanged?.Invoke(currentEnergy);
+    }
+
+    void Update()
+    {
+        ConsumeEnergy();
+    }
+
+    void ConsumeEnergy()
+    {
+        float energyCost = CalculateEnergyConsumption();
+        ModifyEnergy(-energyCost);
+    }
+
+    float CalculateEnergyConsumption()
+    {
+        float geneticCost = genetics.CalculateEnergyConsumptionRate();
+
+        return baseEnergyConsumptionRate * geneticCost;
+    }
+
+    public void ModifyEnergy(float amount)
+    {
+        float previousEnergy = currentEnergy;
+        currentEnergy = Mathf.Clamp(currentEnergy + amount, 0f, maxEnergy);
+
+        if (Mathf.Abs(previousEnergy - currentEnergy) > Mathf.Epsilon)
+        {
+            OnEnergyChanged?.Invoke(EnergyPercentage);
+
+            CheckEnergyThresholds(previousEnergy);
+        }
+    }
+
+    void CheckEnergyThresholds(float previousEnergy)
+    {
+        if (currentEnergy <= 0f && previousEnergy > 0f)
+        {
+            OnEnergyDepleted?.Invoke();
+        }
+        else if (currentEnergy <= criticalEnergyThreshold && previousEnergy > criticalEnergyThreshold)
+        {
+            OnCriticalEnergy?.Invoke();
+        }
+        else if (currentEnergy >= reproductionEnergyThreshold && previousEnergy < reproductionEnergyThreshold)
+        {
+            OnReproductionReady?.Invoke();
+        }
+    }
+
+    public bool TrySpendReproductionEnergy(float cost)
+    {
+        if (currentEnergy >= cost)
+        {
+            ModifyEnergy(-cost);
+            return true;
+        }
+        return false;
+    }
+
+    public void UpdateMaxEnergy()
+    {
+        float newMaxEnergy = genetics.CalculateMaxEnergy(startingEnergy);
+        if (newMaxEnergy != maxEnergy)
+        {
+            maxEnergy = newMaxEnergy;
+            currentEnergy = Mathf.Min(currentEnergy, maxEnergy);
+            OnEnergyChanged?.Invoke(EnergyPercentage);
+        }
+    }
+
+    // Debugging method
+    public string GetEnergyInfo()
+    {
+        return $"Current Energy: {currentEnergy}, Max Energy: {maxEnergy}, " +
+               $"Energy Percentage: {EnergyPercentage * 100f}%";
+    }
+}

@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(OrganismGenetics))]
 [RequireComponent(typeof(OrganismMovement))]
 [RequireComponent(typeof(OrganismEnergy))]
+[RequireComponent(typeof(OrganismFoodSensor))]
+[RequireComponent(typeof(OrganismReproduce))]
 public class OrganismController : MonoBehaviour
 {
     [Header("Current State")]
@@ -12,11 +14,6 @@ public class OrganismController : MonoBehaviour
     [SerializeField] private Color healthyColor = Color.green;
     [SerializeField] private Color lowEnergyColor = Color.red;
 
-    [Header("Reproduction Settings")]
-    [SerializeField] private GameObject organismPrefab;
-    [SerializeField] private float reproductionCost = 100f;
-    [SerializeField] private float reproductionRate = 0.1f;
-    
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = true;
     
@@ -24,6 +21,8 @@ public class OrganismController : MonoBehaviour
     private OrganismGenetics genetics;
     private OrganismMovement movement;
     private OrganismEnergy energy;
+    private OrganismFoodSensor foodSensor;
+    private OrganismReproduce reproduce;
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
     
@@ -41,6 +40,8 @@ public class OrganismController : MonoBehaviour
         genetics = GetComponent<OrganismGenetics>();
         movement = GetComponent<OrganismMovement>();
         energy = GetComponent<OrganismEnergy>();
+        foodSensor = GetComponent<OrganismFoodSensor>();
+        reproduce = GetComponent<OrganismReproduce>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
         
@@ -49,14 +50,9 @@ public class OrganismController : MonoBehaviour
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             // Set default circle sprite
-            spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Circle");
-            if (spriteRenderer.sprite == null)
-            {
-                // Create a default white circle sprite if not found
-                GameObject tempCircle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                spriteRenderer.sprite = tempCircle.GetComponent<SpriteRenderer>().sprite;
-                Destroy(tempCircle);
-            }
+            GameObject tempCircle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            spriteRenderer.sprite = tempCircle.GetComponent<SpriteRenderer>().sprite;
+            Destroy(tempCircle);
         }
         
         // Add collider if missing
@@ -113,10 +109,27 @@ public class OrganismController : MonoBehaviour
         Initialize();
     }
     
+    // ===== 統合されたUpdate処理 =====
     void Update()
     {
         if (!IsAlive) return;
+        
+        // 1. 年齢の更新
         UpdateAge();
+        
+        // 2. 食べ物の検索と移動方向の更新（OrganismFoodSensor）
+        foodSensor.ManagedUpdate();
+        
+        // 3. 移動処理（OrganismMovement）
+        movement.ManagedUpdate();
+        
+        // 4. エネルギー消費（OrganismEnergy）
+        energy.ManagedUpdate();
+        
+        // 5. 繁殖チェック（OrganismReproduce）
+        reproduce.ManagedUpdate();
+        
+        // 6. 死亡チェック
         CheckDeath();
     }
     
@@ -126,8 +139,12 @@ public class OrganismController : MonoBehaviour
         {
             genetics.InitializeRandom();
         }
+        
+        // 各コンポーネントの初期化
         movement.Initialize(boundary);
         energy.Initialize();
+        foodSensor.Initialize();
+        reproduce.Initialize();
 
         UpdateSize();
         OnEnergyChanged(energy.EnergyPercentage);
@@ -189,8 +206,11 @@ public class OrganismController : MonoBehaviour
     
     System.Collections.IEnumerator DeathAnimation()
     {
+        // Disable all components
         movement.enabled = false;
         energy.enabled = false;
+        foodSensor.enabled = false;
+        reproduce.enabled = false;
         circleCollider.enabled = false;
         
         float duration = 0.5f;
@@ -228,28 +248,9 @@ public class OrganismController : MonoBehaviour
         {
             // Gain energy from food
             energy.ModifyEnergy(food.energyValue);
+            foodSensor.OnFoodConsumed();
         }
     }
-    
-    // Debug GUI
-    // void OnGUI()
-    // {
-    //     if (!showDebugInfo || !IsAlive) return;
-    //     
-    //     // Convert world position to screen position
-    //     Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-    //     screenPos.y = Screen.height - screenPos.y; // Flip Y coordinate
-    //     
-    //     // Create label style
-    //     GUIStyle style = new GUIStyle(GUI.skin.label);
-    //     style.fontSize = 10;
-    //     style.normal.textColor = Color.white;
-    //     style.alignment = TextAnchor.MiddleCenter;
-    //     
-    //     // Display info above organism
-    //     string info = $"E: {energy.Energy:F0}/{energy.MaxEnergy:F0}\nA: {age:F0}/{genetics.MaxLifeSpan:F0}";
-    //     GUI.Label(new Rect(screenPos.x - 40, screenPos.y - 50, 80, 30), info, style);
-    // }
     
     // Gizmos for debugging
     void OnDrawGizmosSelected()

@@ -14,7 +14,6 @@ public class OrganismEnergy : MonoBehaviour
 
     [Header("Energy Thresholds")]
     [SerializeField] private float criticalEnergyThreshold = 10f;
-    [SerializeField] private float reproductionEnergyThreshold = 10000f;
 
     [Header("Events")]
     public UnityEvent<float> OnEnergyChanged = new UnityEvent<float>();
@@ -29,7 +28,6 @@ public class OrganismEnergy : MonoBehaviour
     public float EnergyPercentage => currentEnergy / maxEnergy;
     public bool IsEnergyDepleted => currentEnergy <= 0f;
     public bool IsEnergyCritical => currentEnergy <= criticalEnergyThreshold;
-    public bool CanReproduce => currentEnergy >= reproductionEnergyThreshold;
 
     void Awake()
     {
@@ -43,7 +41,8 @@ public class OrganismEnergy : MonoBehaviour
         OnEnergyChanged?.Invoke(currentEnergy);
     }
 
-    void Update()
+    // Update()を削除し、代わりにManagedUpdate()を使用
+    public void ManagedUpdate()
     {
         ConsumeEnergy();
     }
@@ -80,10 +79,6 @@ public class OrganismEnergy : MonoBehaviour
         else if (currentEnergy <= criticalEnergyThreshold && previousEnergy > criticalEnergyThreshold)
         {
             OnCriticalEnergy?.Invoke();
-        }
-        else if (currentEnergy >= reproductionEnergyThreshold && previousEnergy < reproductionEnergyThreshold)
-        {
-            OnReproductionReady?.Invoke();
         }
     }
 

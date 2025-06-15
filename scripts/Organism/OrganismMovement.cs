@@ -28,7 +28,8 @@ public class OrganismMovement : MonoBehaviour
         radius = genetics.Size * 0.5f;
     }
 
-    void Update()
+    // Update()を削除し、代わりにManagedUpdate()を使用
+    public void ManagedUpdate()
     {
         Move();
     }
@@ -40,7 +41,7 @@ public class OrganismMovement : MonoBehaviour
         ChooseNewDirection();
     }
 
-    public void Move()
+    void Move()
     {
         Vector2 desiredDirection = moveDirection;
         
@@ -109,7 +110,7 @@ public class OrganismMovement : MonoBehaviour
         ClearTarget();
     }
 
-    public void ChooseNewDirection()
+    void ChooseNewDirection()
     {
         moveDirection = Random.insideUnitCircle.normalized;
     }

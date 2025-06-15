@@ -27,8 +27,15 @@ public class OrganismFoodSensor : MonoBehaviour
         genetics = GetComponent<OrganismGenetics>();
         movement = GetComponent<OrganismMovement>();
     }
+
+    public void Initialize()
+    {
+        // 初期化処理があれば追加
+        lastFoodCheckTime = 0f;
+    }
     
-    void Update()
+    // Update()を削除し、代わりにManagedUpdate()を使用
+    public void ManagedUpdate()
     {
         CheckForFood();
         UpdateMovementTarget();

@@ -21,7 +21,13 @@ public class OrganismReproduce : MonoBehaviour
         energy = GetComponent<OrganismEnergy>();
     }
 
-    void Update()
+    public void Initialize()
+    {
+        // 初期化処理があれば追加
+    }
+
+    // Update()を削除し、代わりにManagedUpdate()を使用
+    public void ManagedUpdate()
     {
         if (controller.IsAlive)
         {

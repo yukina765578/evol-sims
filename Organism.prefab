@@ -11,6 +11,10 @@ GameObject:
   - component: {fileID: 8689385450617680686}
   - component: {fileID: 6493447783261547092}
   - component: {fileID: -268317678255836898}
+  - component: {fileID: 3131208653642258329}
+  - component: {fileID: 4325210969208090481}
+  - component: {fileID: 6115886513040051433}
+  - component: {fileID: 4749420307249651577}
   m_Layer: 0
   m_Name: Organism
   m_TagString: Untagged
@@ -100,3 +104,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab748270018c6b40b259564445c1dac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  age: 0
+  healthyColor: {r: 0, g: 1, b: 0, a: 1}
+  lowEnergyColor: {r: 1, g: 0, b: 0, a: 1}
+  organismPrefab: {fileID: 0}
+  reproductionCost: 100
+  reproductionRate: 0.1
+  showDebugInfo: 1
+--- !u!114 &3131208653642258329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d2721936d9f8bc40a81dfc569ac017f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
+  size: 1
+  sensingRadius: 5
+  maxLifeSpan: 100
+  speedRange: {x: 0.5, y: 10}
+  sizeRange: {x: 0.5, y: 5}
+  sensingRadiusRange: {x: 1, y: 10}
+  maxLifeSpanRange: {x: 50, y: 200}
+  mutationRate: 0.1
+  mutationStrength: 0.1
+--- !u!114 &4325210969208090481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49287a2555751c48be14b54c3bd55b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directionChangeChance: 0.001
+  moveDirection: {x: 0, y: 0}
+--- !u!114 &6115886513040051433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccfa9fc36e9aae14f967bf9db0b6d24b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingEnergy: 1e+9
+  baseEnergyConsumptionRate: 0.001
+  currentEnergy: 0
+  maxEnergy: 0
+  criticalEnergyThreshold: 10
+  reproductionEnergyThreshold: 80
+  OnEnergyChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnergyDepleted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCriticalEnergy:
+    m_PersistentCalls:
+      m_Calls: []
+  OnReproductionReady:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4749420307249651577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703c11c71ab5a8648b78eac1c74e463e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  organismPrefab: {fileID: 6880720324883062853}
+  reproductionCost: 100
+  reproductionRate: 0.1

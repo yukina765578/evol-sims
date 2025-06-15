@@ -33,19 +33,24 @@ public class OrganismReproduce : MonoBehaviour
     {
         if (CanReproduce())
         {
-            energy.ModifyEnergy(-reproductionCost);
+            float scaledReproductionCost = energy.MaxEnergy * 0.5f;
+            energy.ModifyEnergy(-scaledReproductionCost);
             Reproduce();
         }
     }
 
     bool CanReproduce()
     {
+        float maxEnergy = energy.MaxEnergy;
         float currentEnergy = energy.Energy;
-        return currentEnergy >= reproductionCost && Random.value < reproductionRate;
+        float reproductionThreshold = energy.MaxEnergy * 0.8f;
+
+        return currentEnergy >= reproductionThreshold && Random.value < reproductionRate;
     }
 
     void Reproduce()
     {
+        Debug.Log($"{gameObject.name} is reproducing!");
         Vector3 spawnPosition = transform.position + (Vector3)Random.insideUnitCircle * 2f;
         GameObject offspringObject = Instantiate(organismPrefab, spawnPosition, Quaternion.identity);
 
@@ -55,7 +60,7 @@ public class OrganismReproduce : MonoBehaviour
         if (offspringController != null && offspringGenetics != null)
         {
             offspringGenetics.Inherit(genetics);
-            offspringController.InitializeFromGenetics(offspringGenetics);
+            offspringController.Initialize(false);
         }
     }
 }

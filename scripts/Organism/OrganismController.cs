@@ -120,9 +120,12 @@ public class OrganismController : MonoBehaviour
         CheckDeath();
     }
     
-    public void Initialize()
+    public void Initialize(bool useRandomGenetics = true)
     {
-        genetics.InitializeRandom();
+        if (useRandomGenetics)
+        {
+            genetics.InitializeRandom();
+        }
         movement.Initialize(boundary);
         energy.Initialize();
 

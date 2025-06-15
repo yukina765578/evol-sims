@@ -5,7 +5,7 @@ using UnityEngine.Events;
 public class OrganismEnergy : MonoBehaviour
 {
     [Header("Energy Settings")]
-    [SerializeField] private float startingEnergy = 1000000000.0f;
+    [SerializeField] private float startingEnergy = 50.0f;
     [SerializeField] private float baseEnergyConsumptionRate = 0.001f;
 
     [Header("Current State")]
@@ -14,7 +14,7 @@ public class OrganismEnergy : MonoBehaviour
 
     [Header("Energy Thresholds")]
     [SerializeField] private float criticalEnergyThreshold = 10f;
-    [SerializeField] private float reproductionEnergyThreshold = 80f;
+    [SerializeField] private float reproductionEnergyThreshold = 10000f;
 
     [Header("Events")]
     public UnityEvent<float> OnEnergyChanged = new UnityEvent<float>();
@@ -39,7 +39,7 @@ public class OrganismEnergy : MonoBehaviour
     public void Initialize()
     {
         maxEnergy = genetics.CalculateMaxEnergy(startingEnergy);
-        currentEnergy = maxEnergy;
+        currentEnergy = maxEnergy * 0.5f;
         OnEnergyChanged?.Invoke(currentEnergy);
     }
 

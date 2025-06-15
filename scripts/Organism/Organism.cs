@@ -8,6 +8,11 @@ public class Organism: MonoBehaviour
     public float sensingRadius = 3f;
     public float maxLifespan = 100f; 
 
+    [Header("Food Detection")]
+    private GameObject targetFood = null; // Reference to the food GameObject
+    private float foodCheckInterval = 0.5f;
+    private float lastFoodCheckTime = 0f;
+
     [Header("Current State")]
     public float energy = 50f;
     public float age = 0f;
@@ -43,6 +48,7 @@ public class Organism: MonoBehaviour
 
     void Update()
     {
+        CheckForFood();
         Move();
         ConsumeEnergy();
         UpdateVisuals();
@@ -52,6 +58,18 @@ public class Organism: MonoBehaviour
 
         void Move()
     {
+        if (targetFood != null)
+        {
+            Vector2 directionToFood = (targetFood.transform.position - transform.position).normalized;
+            moveDirection = directionToFood;
+        }
+        else
+        {
+            if (Random.value < 0.01f)
+            {
+                ChooseNewDirection();
+            }
+        }
         // Calculate next position
         Vector3 nextPosition = transform.position + (Vector3)(moveDirection * speed * Time.deltaTime);
         
@@ -63,12 +81,33 @@ public class Organism: MonoBehaviour
         }
         else
         {
-            if (Random.value < 0.01f)
-            {
-                ChooseNewDirection();
-            }
             transform.position = nextPosition;
         }
+    }
+
+    void CheckForFood()
+    {
+        if( Time.time - lastFoodCheckTime < foodCheckInterval) return;
+        lastFoodCheckTime = Time.time;
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, sensingRadius);
+        GameObject nearestFood = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag("Food"))
+            {
+                float distance = Vector2.Distance(transform.position, collider.transform.position);
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestFood = collider.gameObject;
+                }
+            }
+        }
+
+        targetFood = nearestFood;
     }
     
     bool WouldBeOutsideBoundary(Vector3 position)
@@ -115,6 +154,9 @@ public class Organism: MonoBehaviour
         {
             energy = maxEnergy;
         }
+
+        // Clear target food so the organism can search for new food
+        targetFood = null;
     }
 
     void Awake()

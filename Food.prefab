@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2961216012788846716}
   - component: {fileID: 367653066646885791}
   - component: {fileID: -7974727078577977869}
+  - component: {fileID: 781908011640149044}
   m_Layer: 0
   m_Name: Food
   m_TagString: Untagged
@@ -102,3 +103,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energyValue: 4
   size: 0.5
+--- !u!114 &781908011640149044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7085532213672567868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3b6c17beb27639409a8a71e9930b56c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableGlow: 1
+  glowColor: {r: 0, g: 0.3664055, b: 1, a: 0.5}
+  glowSize: 1
+  glowOpacity: 0.5
+  glowLayerCount: 4

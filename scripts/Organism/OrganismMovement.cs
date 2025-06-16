@@ -13,6 +13,7 @@ public class OrganismMovement : MonoBehaviour
 
     private OrganismGenetics genetics;
     private BoundaryVisualizer boundary;
+    private Rigidbody2D rb;
     private float radius; // Cache the radius for performance
 
     public Vector2 CurrentDirection => moveDirection;
@@ -21,6 +22,7 @@ public class OrganismMovement : MonoBehaviour
     void Awake()
     {
         genetics = GetComponent<OrganismGenetics>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     public void UpdateRadius()
@@ -126,6 +128,41 @@ public class OrganismMovement : MonoBehaviour
         hasTarget = false;
         targetDirection = Vector2.zero;
     }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        // Check if we're colliding with another organism
+        OrganismController other = collision.gameObject.GetComponent<OrganismController>();
+        if (other != null && other.IsAlive)
+        {
+            OrganismGenetics otherGenetics = other.GetComponent<OrganismGenetics>();
+            
+            // Calculate size difference
+            float sizeDiff = genetics.Size - otherGenetics.Size;
+            
+            // Only push if we're significantly bigger (at least 20% larger)
+            if (sizeDiff > genetics.Size * 0.2f)
+            {
+                // Calculate push direction away from us
+                Vector2 pushDirection = (collision.transform.position - transform.position).normalized;
+                
+                // Push force scales with size difference
+                // Bigger difference = stronger push
+                float pushForce = sizeDiff * 3f;
+                
+                // Apply the push
+                Rigidbody2D otherRb = collision.gameObject.GetComponent<Rigidbody2D>();
+                if (otherRb != null)
+                {
+                    otherRb.AddForce(pushDirection * pushForce, ForceMode2D.Impulse);
+                    
+                    // Optional: Add visual feedback
+                    // Debug.Log($"{gameObject.name} (size {genetics.Size:F1}) pushed {other.gameObject.name} (size {otherGenetics.Size:F1})");
+                }
+            }
+        }
+    }
+
 
     // Debug visualization
     void OnDrawGizmosSelected()

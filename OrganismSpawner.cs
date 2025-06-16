@@ -2,10 +2,16 @@ using UnityEngine;
 
 public class OrganismSpawner : MonoBehaviour
 {
+    public static OrganismSpawner Instance { get; private set; } // Singleton for easy access
+
     [Header("Spawning Settings")]
     public GameObject organismPrefab; // Your circle prefab goes here
     public int spawnCount = 10;
     
+    [Header("Population Control")]
+    public int maxPopulation = 100;
+    private int currentPopulation = 0;
+
     [Header("Boundary Reference")]
     public GameObject boundaryObject; // Drag your boundary object here
     
@@ -15,6 +21,12 @@ public class OrganismSpawner : MonoBehaviour
     
     private BoundaryVisualizer boundary;
     
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
     void Start()
     {
         // Get the boundary component
@@ -40,8 +52,10 @@ public class OrganismSpawner : MonoBehaviour
     {
         for (int i = 0; i < spawnCount; i++)
         {
+            if (currentPopulation >= maxPopulation) break;
             Vector2 spawnPos = FindValidSpawnPosition();
-            Instantiate(organismPrefab, spawnPos, Quaternion.identity);
+            GameObject org = Instantiate(organismPrefab, spawnPos, Quaternion.identity);
+            // Do NOT call RegisterOrganism() here; let each organism register itself in its Awake/Start
         }
     }
     
@@ -71,7 +85,7 @@ public class OrganismSpawner : MonoBehaviour
     bool IsTooCloseToOthers(Vector2 position)
     {
         // Find all existing organisms (you might need to tag them)
-        GameObject[] existingOrganisms = GameObject.FindGameObjectsWithTag("Untagged"); // Change this if you tag your organisms
+        GameObject[] existingOrganisms = GameObject.FindGameObjectsWithTag("Organism"); // Use your organism tag
         
         foreach (GameObject organism in existingOrganisms)
         {
@@ -84,5 +98,34 @@ public class OrganismSpawner : MonoBehaviour
             }
         }
         return false;
+    }
+
+    // --- Population control methods ---
+    public bool CanSpawn()
+    {
+        return currentPopulation < maxPopulation;
+    }
+
+    public void RegisterOrganism()
+    {
+        currentPopulation++;
+    }
+
+    public void UnregisterOrganism()
+    {
+        currentPopulation = Mathf.Max(0, currentPopulation - 1);
+    }
+
+    public int GetPopulation() => currentPopulation;
+    public int GetMaxPopulation() => maxPopulation;
+
+    public bool IsInsideBoundary(Vector2 position, float radius = 0f)
+    {
+        if (boundary == null) return true; // fallback: allow if no boundary
+
+        float halfWidth = boundary.width / 2f - radius;
+        float halfHeight = boundary.height / 2f - radius;
+
+        return Mathf.Abs(position.x) <= halfWidth && Mathf.Abs(position.y) <= halfHeight;
     }
 }

@@ -12,7 +12,7 @@ public class OrganismGenetics : MonoBehaviour
     [SerializeField] private Vector2 speedRange = new Vector2(0.5f, 10.0f);
     [SerializeField] private Vector2 sizeRange = new Vector2(0.5f, 5.0f);
     [SerializeField] private Vector2 sensingRadiusRange = new Vector2(1.0f, 10.0f);
-    [SerializeField] private Vector2 maxLifeSpanRange = new Vector2(20.0f, 80.0f);
+    [SerializeField] private Vector2 maxLifeSpanRange = new Vector2(10f, 100f);
     
     [Header("Mutation Settings")]
     [SerializeField] private float mutationRate = 0.1f; // Probability of mutation
@@ -23,6 +23,7 @@ public class OrganismGenetics : MonoBehaviour
     public float Size => size;
     public float SensingRadius => sensingRadius;
     public float MaxLifeSpan => maxLifeSpan;
+    public Vector2 MaxLifeSpanRange => maxLifeSpanRange;
     
     public void InitializeRandom()
     {
@@ -44,8 +45,8 @@ public class OrganismGenetics : MonoBehaviour
     {
         if (Random.value < mutationRate)
         {
-            float mutation = Random.Range(0.9f, 1.1f);
-            float newValue = traitValue * mutation;
+            float mutation = Random.Range(-mutationStrength, mutationStrength);
+            float newValue = traitValue + mutation;
             return Mathf.Clamp(newValue, range.x, range.y);
         }
         return traitValue;
@@ -53,7 +54,9 @@ public class OrganismGenetics : MonoBehaviour
     
     public float CalculateEnergyConsumptionRate()
     {
-        return (speed * 0.05f + size * 0.03f + sensingRadius * 0.01f) * 0.1f;
+        // Example: energy consumption depends on size and speed
+        // Adjust multipliers as needed
+        return (size * 0.1f * speed * 0.5f + sensingRadius * 0.5f) * 0.002f;
     }
     
     public float CalculateMaxEnergy(float baseEnergy)

@@ -40,7 +40,6 @@ public class FoodSpawner : MonoBehaviour
         SpawnInitialFood();
     }
 
-    // ★★★ 変更点2: Updateメソッドをバッチ生成ロジックに変更 ★★★
     void Update()
     {
         spawnTimer += Time.deltaTime;
@@ -49,15 +48,28 @@ public class FoodSpawner : MonoBehaviour
         if (spawnTimer >= spawnRate)
         {
             spawnTimer = 0f; // タイマーをリセット
-            Debug.Log($"Current active food count: {activeFoodCount}");
+            
+            // Count actual active food instead of relying on counter
+            int actualActiveFood = 0;
+            foreach (GameObject food in foodPool)
+            {
+                if (food.activeInHierarchy) actualActiveFood++;
+            }
+         
+            // Fix any discrepancies
+            activeFoodCount = actualActiveFood;
 
             // spawnBatchSizeの数だけエサを生成するループ
+            int spawned = 0;
             for (int i = 0; i < spawnBatchSize; i++)
             {
                 // ただし、最大数を超えないようにチェック
                 if (activeFoodCount < maxFoodCount)
                 {
-                    SpawnFoodFromPool();
+                    if (SpawnFoodFromPool())
+                    {
+                        spawned++;
+                    }
                 }
                 else
                 {
@@ -65,6 +77,7 @@ public class FoodSpawner : MonoBehaviour
                     break;
                 }
             }
+        
         }
     }
 
@@ -94,7 +107,7 @@ public class FoodSpawner : MonoBehaviour
         }
     }
 
-    void SpawnFoodFromPool()
+    bool SpawnFoodFromPool()
     {
         foreach (GameObject food in foodPool)
         {
@@ -103,9 +116,12 @@ public class FoodSpawner : MonoBehaviour
                 food.transform.position = GetRandomSpawnPosition();
                 food.SetActive(true);
                 activeFoodCount++;
-                return;
+                return true;
             }
         }
+        
+        Debug.LogWarning("Could not find inactive food in pool!");
+        return false;
     }
 
     public void ReturnFoodToPool(GameObject food)

@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 6115886513040051433}
   - component: {fileID: 4749420307249651577}
   - component: {fileID: -2051089579377279157}
+  - component: {fileID: 9185560758391543172}
+  - component: {fileID: -2067703831651312485}
   m_Layer: 0
   m_Name: Organism
   m_TagString: Untagged
@@ -126,11 +128,11 @@ MonoBehaviour:
   sensingRadius: 5
   maxLifeSpan: 50
   speedRange: {x: 1, y: 20}
-  sizeRange: {x: 1, y: 10}
+  sizeRange: {x: 1, y: 15}
   sensingRadiusRange: {x: 1, y: 10}
-  maxLifeSpanRange: {x: 30, y: 50}
-  mutationRate: 0.1
-  mutationStrength: 0.1
+  maxLifeSpanRange: {x: 20, y: 60}
+  mutationRate: 0.3
+  mutationStrength: 1.2
 --- !u!114 &4325210969208090481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingEnergy: 50
-  baseEnergyConsumptionRate: 0.001
+  baseEnergyConsumptionRate: 0.5
   currentEnergy: 0
   maxEnergy: 0
   criticalEnergyThreshold: 10
@@ -190,7 +192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   organismPrefab: {fileID: 6880720324883062853}
   reproductionCost: 90
-  reproductionRate: 0.5
+  reproductionRate: 0.3
 --- !u!114 &-2051089579377279157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,9 +205,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b1c05bb43e9ac47a5b1fe1fd407d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foodCheckInterval: 0.5
+  foodCheckInterval: 0.1
   foodLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   targetFood: {fileID: 7085532213672567868, guid: 243544c01bbd8544ea5f878d1968951a, type: 3}
   hasTargetFood: 0
+--- !u!114 &9185560758391543172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3b6c17beb27639409a8a71e9930b56c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableGlow: 0
+  glowColor: {r: 1, g: 1, b: 0, a: 0.5}
+  glowSize: 0.34
+  glowOpacity: 0.5
+  glowLayerCount: 4
+--- !u!114 &-2067703831651312485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880720324883062853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade5f6005becf1a40aaee6413a95f07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

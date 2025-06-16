@@ -25,6 +25,7 @@ public class OrganismController : MonoBehaviour
     private OrganismReproduce reproduce;
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
+    private OrganismVisual organismVisual; // Add this line
     
     // World References
     private BoundaryVisualizer boundary;
@@ -33,6 +34,7 @@ public class OrganismController : MonoBehaviour
     // Properties
     public float Age => age;
     public bool IsAlive { get; private set; } = true;
+    private bool IsInitialized = false;
     
     void Awake()
     {
@@ -44,6 +46,10 @@ public class OrganismController : MonoBehaviour
         reproduce = GetComponent<OrganismReproduce>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
+        organismVisual = GetComponent<OrganismVisual>();
+
+        // Register with spawner
+        OrganismSpawner.Instance?.RegisterOrganism();
         
         // Add sprite renderer if missing
         if (spriteRenderer == null)
@@ -59,15 +65,19 @@ public class OrganismController : MonoBehaviour
         if (circleCollider == null)
         {
             circleCollider = gameObject.AddComponent<CircleCollider2D>();
-            circleCollider.isTrigger = false;
+            circleCollider.isTrigger = false;  // Keep solid for collisions
         }
         
-        // Add Rigidbody2D if missing
+        // Add Rigidbody2D if missing - CHANGED FOR PHYSICS-BASED COLLISIONS
         if (GetComponent<Rigidbody2D>() == null)
         {
             Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
-            rb.bodyType = RigidbodyType2D.Kinematic;
-            rb.freezeRotation = true;
+            rb.bodyType = RigidbodyType2D.Dynamic;  // Changed from Kinematic
+            rb.linearDamping = 10f;  // High damping to prevent sliding
+            rb.angularDamping = 10f;  // Prevent spinning
+            rb.freezeRotation = true;  // No rotation
+            rb.gravityScale = 0f;  // No gravity
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;  // Better collision detection
         }
         
         // Set tag
@@ -106,13 +116,16 @@ public class OrganismController : MonoBehaviour
     
     void Start()
     {
-        Initialize();
+        if (!IsInitialized)
+        {
+            Initialize(true);
+        }
     }
     
     void Update()
     {
         if (!IsAlive) return;
-        Debug.Log($"{gameObject.name} Age: {age:F1}, Energy: {energy.Energy}, Reproduce: {energy.MaxEnergy * 0.8f}");
+        // Debug.Log($"{gameObject.name} Age: {age:F1}, Energy: {energy.Energy}, Reproduce: {energy.MaxEnergy * 0.8f}");
         UpdateAge();
         foodSensor.ManagedUpdate();
         movement.ManagedUpdate();
@@ -123,10 +136,20 @@ public class OrganismController : MonoBehaviour
     
     public void Initialize(bool useRandomGenetics = true)
     {
+        if (IsInitialized) return;
+        IsInitialized = true;
         if (useRandomGenetics)
         {
             genetics.InitializeRandom();
+            // log genetics
+            Debug.Log($"Initialized {gameObject.name} with random genetics: {genetics.ToString()}");
         }
+        else
+        {
+            Debug.Log("Using inherited genetics from parent organism.");
+        }
+
+        age = 0f;
         
         // 各コンポーネントの初期化
         movement.Initialize(boundary);
@@ -158,9 +181,14 @@ public class OrganismController : MonoBehaviour
     
     void OnEnergyChanged(float energyPercentage)
     {
-        if (spriteRenderer != null)
+        Color lerpedColor = Color.Lerp(lowEnergyColor, healthyColor, energyPercentage);
+        if (organismVisual != null)
         {
-            spriteRenderer.color = Color.Lerp(lowEnergyColor, healthyColor, energyPercentage);
+            organismVisual.SetOrganismColor(lerpedColor);
+        }
+        else if (spriteRenderer != null)
+        {
+            spriteRenderer.color = lerpedColor;
         }
     }
     
@@ -185,10 +213,13 @@ public class OrganismController : MonoBehaviour
     void Die(string cause)
     {
         if (!IsAlive) return;
-        
+
         IsAlive = false;
-        // Debug.Log($"{gameObject.name} died from {cause} at age {age:F1}");
-        
+        Debug.Log($"{gameObject.name} died from {cause} at age {age:F1}");
+
+        // Unregister from spawner
+        OrganismSpawner.Instance?.UnregisterOrganism();
+
         StartCoroutine(DeathAnimation());
     }
     
